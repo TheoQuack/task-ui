@@ -5,10 +5,11 @@ import Registration from './components/Registeration';
 import UserLogin from './components/UserLogin';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Home from './components/HomePage';
+import AddTaskForm from './components/AddTaskForm';
+import EnhancedTable from './components/TaskList2';
 
 function App() {
   
-
   return (
 
 
@@ -18,7 +19,8 @@ function App() {
       <Route path="/registration" element={<Registration/>}></Route>
       <Route path="/login" element={<UserLogin/>}></Route>
       <Route path="/tasks" element={<TaskList/>}></Route>
-      
+      <Route path="/tasks2" element={<EnhancedTable/>}></Route>
+      <Route path='/newtask' element={<AddTaskForm/>}></Route>
     </Routes>
   </Router>
 

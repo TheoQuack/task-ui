@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import  TaskCard  from "./TaskCard";
 import { sampleTasks } from "../data/sampleTasks";
 import getAllTasks from "../api/getAllTasks";
+import AddTaskForm from "./AddTaskForm";
 
 
 export default function TaskList() {
@@ -22,33 +23,6 @@ export default function TaskList() {
     const updated = tasks.map((task) => task.id === id ? {...task, done: !task.done}: task);
     setTasks(updated);
     };
-
-    
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-    // const [tasks, setTasks] = useState([]);
-
-    // const tasksAll = async () => {
-    //     const AllTasks = await getAllTasks();
-    //     setTasks(AllTasks);
-    // }
-
-    // useEffect(()=>{
-    //     tasksAll();
-    // })
 
     return (
 

@@ -11,9 +11,7 @@ var requestOptions = {
 };
 
 for (let i = 0; i < id.length; i++) {
-    fetch(`http://localhost:3000/api/tasks/${id[i]}`, requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
+   await fetch(`http://localhost:3000/api/tasks/${id[i]}`, requestOptions)
   .catch(error => console.log('error', error));
 }
 

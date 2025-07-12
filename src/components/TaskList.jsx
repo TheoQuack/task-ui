@@ -189,7 +189,7 @@ export default function EnhancedTable() {
        // Set a timeout to update the message after 3 seconds
     const timerId = setTimeout(() => {
       allTheTasks();
-    }, 3000);
+    }, 10);
 
     // Return a cleanup function to clear the timeout
     return () => {
@@ -233,14 +233,14 @@ export default function EnhancedTable() {
     console.log(newSelected);
   };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+  // const handleChangePage = (event, newPage) => {
+  //   setPage(newPage);
+  // };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  // const handleChangeRowsPerPage = (event) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
 
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
@@ -250,13 +250,14 @@ export default function EnhancedTable() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  const visibleRows = React.useMemo(
-    () =>
-      [...rows]
-        .sort(getComparator(order, orderBy))
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage],
-  );
+  // const visibleRows =
+  // React.useMemo(
+  //   () =>
+  //     [...rows]
+  //       .sort(getComparator(order, orderBy))
+  //       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+  //   [order, orderBy, page, rowsPerPage],
+  // );
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -277,7 +278,7 @@ export default function EnhancedTable() {
               rowCount={rows.length}
             />
             <TableBody>
-              {visibleRows.map((row, index) => {
+              {rows.map((row, index) => {
                 const isItemSelected = selected.includes(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -326,7 +327,7 @@ export default function EnhancedTable() {
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
+        {/* <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={rows.length}
@@ -334,7 +335,7 @@ export default function EnhancedTable() {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        /> */}
       </Paper>
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}

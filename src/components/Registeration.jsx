@@ -1,11 +1,13 @@
 import {Box, TextField, Button} from '@mui/material'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 export default function Registration(){
 
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
 
     const handleSubmit = async (e) =>{
@@ -34,7 +36,7 @@ export default function Registration(){
 
             fetch("http://localhost:3000/api/register", requestOptions)
             .then(response => response.text())
-            .then(result => console.log(result))
+            .then(()=> {navigate('/'); console.log("hello")})
             .catch(error => console.log('error', error));
         
 

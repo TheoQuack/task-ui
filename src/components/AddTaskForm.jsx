@@ -5,6 +5,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import createTask from '../api/CreateTask';
+import AuthChecker from '../AuthChecker';
 
 
 
@@ -25,7 +26,8 @@ export default function AddTaskForm(){
     }
 
     return (
-
+        <>
+        <AuthChecker/>
         <form onSubmit={handleSubmit}>
             <TextField
             label= "Task Title" 
@@ -45,6 +47,6 @@ export default function AddTaskForm(){
             </LocalizationProvider>
             <Button variant='outlined' type='submit'> Submit</Button>
         </form>
-
+        </>
     );
 }

@@ -1,11 +1,33 @@
 import {Box, TextField, Button} from '@mui/material'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+
+
+const GoToLogin = () => {
+    
+    const navigate = useNavigate();
+
+    useEffect(() => {
+    const timerId = setTimeout(() => {
+    navigate('/')
+    }, 30);
+
+    return () => {
+    clearTimeout(timerId);
+    };
+
+
+}, []);
+}
+
+
 
 export default function UserLogin() {
 
         const [email, setEmail] = useState('');
         const [password, setPassword] = useState('');
-    
+        const navigate = useNavigate();
     
         const handleSubmit = async (e) =>{
     
@@ -31,8 +53,12 @@ export default function UserLogin() {
             fetch("http://localhost:3000/api/login", requestOptions)
             .then(response => response.json())
             .then(result => {console.log(result)
-             localStorage.setItem("TOKEN", encodeURI(result.token))})
-            .catch(error => console.log('error', error));
+             localStorage.setItem("TOKEN", encodeURI(result.token))
+             navigate("/")
+            })
+            .catch(error => {
+                console.log('error', error)
+            });
             
     
             } catch(err){

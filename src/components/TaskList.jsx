@@ -25,24 +25,25 @@ import { useState, useEffect } from 'react';
 import getAllTasks from "../api/getAllTasks";
 import { Button } from '@mui/material';
 import deleteTask from '../api/deleteTasks';
+import AuthChecker from '../AuthChecker';
 
 
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
+// function descendingComparator(a, b, orderBy) {
+//   if (b[orderBy] < a[orderBy]) {
+//     return -1;
+//   }
+//   if (b[orderBy] > a[orderBy]) {
+//     return 1;
+//   }
+//   return 0;
+// }
 
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
+// function getComparator(order, orderBy) {
+//   return order === 'desc'
+//     ? (a, b) => descendingComparator(a, b, orderBy)
+//     : (a, b) => -descendingComparator(a, b, orderBy);
+// }
 
 const headCells = [
   {
@@ -174,9 +175,9 @@ export default function EnhancedTable() {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
+  // const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  // const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const [rows, setTasks] = useState([]);
 
@@ -247,8 +248,8 @@ export default function EnhancedTable() {
   };
 
   // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  // const emptyRows =
+  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   // const visibleRows =
   // React.useMemo(
@@ -260,6 +261,8 @@ export default function EnhancedTable() {
   // );
 
   return (
+    <>
+    <AuthChecker/>
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar allTheTasks={allTheTasks} numSelected={selected.length} selectedID={selected}/>
@@ -315,7 +318,7 @@ export default function EnhancedTable() {
                   </TableRow>
                 );
               })}
-              {emptyRows > 0 && (
+              {/* {emptyRows > 0 && (
                 <TableRow
                   style={{
                     height: (dense ? 33 : 53) * emptyRows,
@@ -323,7 +326,7 @@ export default function EnhancedTable() {
                 >
                   <TableCell colSpan={6} />
                 </TableRow>
-              )}
+              )} */}
             </TableBody>
           </Table>
         </TableContainer>
@@ -342,5 +345,6 @@ export default function EnhancedTable() {
         label="Dense padding"
       />
     </Box>
+    </>
   );
 }

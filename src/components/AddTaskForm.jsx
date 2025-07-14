@@ -33,6 +33,7 @@ export default function AddTaskForm(){
             label= "Task Title" 
             variant='outlined' 
             fullWidth 
+            value={title}
             onChange={(e) => {
                 setTitle(e.target.value)
             }}

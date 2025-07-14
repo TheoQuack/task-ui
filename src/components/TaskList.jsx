@@ -26,7 +26,9 @@ import getAllTasks from "../api/getAllTasks";
 import { Button } from '@mui/material';
 import deleteTask from '../api/deleteTasks';
 import AuthChecker from '../AuthChecker';
-
+import AddIcon from '@mui/icons-material/Add';
+import { useNavigate } from 'react-router-dom';
+import DeleteConfirmationModal from '../modals/deleteConfirmationModal';
 
 
 // function descendingComparator(a, b, orderBy) {
@@ -126,13 +128,16 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
+
+
 function EnhancedTableToolbar(props) {
   const { numSelected, allTheTasks } = props;
+  const navigate = useNavigate();
 
-  const callDelete = async () => {
+  const handleDelete = async () => {
     await deleteTask(props.selectedID);
     allTheTasks();
-  }
+}
   
   return (
     <Toolbar
@@ -149,14 +154,15 @@ function EnhancedTableToolbar(props) {
     >
       {numSelected > 0 ? (
         <Tooltip title="Delete" >
-          <IconButton onClick={callDelete}>
-            <DeleteIcon />
-          </IconButton>
+          <DeleteConfirmationModal deleteFunc={handleDelete}/>
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
+        <Tooltip>
           <IconButton>
             <FilterListIcon />
+          </IconButton>
+          <IconButton>
+            <AddIcon onClick={()=>navigate('/newtask')}/>
           </IconButton>
         </Tooltip>
       )}
@@ -170,6 +176,8 @@ EnhancedTableToolbar.propTypes = {
   allTheTasks: PropTypes.func.isRequired
 };
 
+
+
 export default function EnhancedTable() {
 
   const [order, setOrder] = React.useState('asc');
@@ -180,7 +188,6 @@ export default function EnhancedTable() {
   // const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const [rows, setTasks] = useState([]);
-
   const allTheTasks = async () => {
       await getAllTasks()
       .then(e => {setTasks(e)})

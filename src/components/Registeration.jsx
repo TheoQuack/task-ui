@@ -36,8 +36,16 @@ export default function Registration(){
 
             fetch("http://localhost:3000/api/register", requestOptions)
             .then(response => response.text())
-            .then(()=> {navigate('/'); console.log("hello")})
-            .catch(error => console.log('error', error));
+            .then((e)=> {
+                let parsedData = JSON.parse(e);
+                if (parsedData.error){
+                    throw new Error("Registration Error");
+                }
+                
+                navigate('/'); console.log(parsedData.error)
+            
+            })
+            .catch(error => console.log(error));
         
 
         } catch(err){

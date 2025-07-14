@@ -41,9 +41,7 @@ export default function Registration(){
                 if (parsedData.error){
                     throw new Error("Registration Error");
                 }
-                
-                navigate('/'); console.log(parsedData.error)
-            
+                navigate('/login');
             })
             .catch(error => console.log(error));
         

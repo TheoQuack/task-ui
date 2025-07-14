@@ -12,7 +12,7 @@ function AuthChecker() {
       .then((e)=>{  
             if (e.error){
             navigate('/login');
-            console.log(e.error,'hello')
+            console.log(e.error)
         }
       })  
 

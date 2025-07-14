@@ -54,7 +54,10 @@ export default function UserLogin() {
             .then(response => response.json())
             .then(result => {console.log(result)
              localStorage.setItem("TOKEN", encodeURI(result.token))
-             navigate("/")
+             if (result.error){
+                console.log(result.error)
+             }
+             else navigate('/');
             })
             .catch(error => {
                 console.log('error', error)

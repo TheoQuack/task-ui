@@ -57,8 +57,13 @@ export default function UserLogin() {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    border: '1px solid #ccc',
+                    // This ensures the background is always white
+                    bgcolor: 'white', // Explicitly set to white
+
+                    // Adding a stronger border and a larger shadow to make it stand out more
+                    border: '1px solid #e0e0e0', // Lighter border for subtle definition
                     borderRadius: '8px',
+                    boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)', // Stronger shadow
                     overflow: 'hidden',
                 }}
             >
@@ -104,10 +109,9 @@ export default function UserLogin() {
                         fullWidth
                     />
                     <Link
-                        href="#" // You can replace this with a proper route to a "Forgot Password" page
+                        component={RouterLink} to="/registration"
                         variant="body2"
                         sx={{ alignSelf: 'flex', mt: 1 }}
-                        component={RouterLink} to="/registration"
                     >
                         Register Now!
                     </Link>

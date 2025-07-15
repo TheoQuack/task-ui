@@ -32,6 +32,7 @@ import DeleteConfirmationModal from '../modals/deleteConfirmationModal';
 import UpdateTaskModal from '../modals/updateTaskModal';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import AddTaskModal from '../modals/addTaskModal';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 
@@ -132,11 +133,6 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
- const handleUpdate = async (id) => {
-    UpdateTaskModal
-    console.log(id);
-  }
-  
 
 
 function EnhancedTableToolbar(props) {
@@ -170,8 +166,11 @@ function EnhancedTableToolbar(props) {
         
       ) : (
         <Tooltip>
+           <Tooltip title="Back" >
+          <ArrowBackIcon fontSize="small" onClick={()=>{navigate('/')}}/>
+        </Tooltip>
           <IconButton>
-            <AddTaskModal allTheTasks={()=>{allTheTasks()}} />
+            <AddTaskModal allTheTasks={allTheTasks} />
           </IconButton>
         </Tooltip>
       )}
@@ -363,10 +362,6 @@ export default function EnhancedTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         /> */}
       </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
     </Box>
     </>
   );

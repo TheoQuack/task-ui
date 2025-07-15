@@ -56,6 +56,7 @@ export default function UserLogin() {
              localStorage.setItem("TOKEN", encodeURI(result.token))
              if (result.error){
                 console.log(result.error)
+                window.alert('Error: Invalid Credentials')
              }
              else navigate('/');
             })

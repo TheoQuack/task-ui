@@ -10,6 +10,7 @@ import createTask from '../api/CreateTask';
 import AuthChecker from '../AuthChecker';
 import AddIcon from '@mui/icons-material/Add';
 import PropTypes from 'prop-types';
+import EnhancedTable from '../components/TaskList';
 
 const style = {
   position: 'absolute',
@@ -43,12 +44,14 @@ export default function AddTaskModal(props) {
 
     } 
     await createTask(payload)
+    .then()
     .catch((e)=>{
         null
     }
     )
     handleClose();
     allTheTasks();
+    console.log("hellosss");
     
 }
 

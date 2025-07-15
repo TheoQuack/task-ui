@@ -1,7 +1,7 @@
 
 
 
-const createTask = async ({title, dueDate}) => {
+const createTask = async ({title, dueDate, status}) => {
 
     
 var myHeaders = new Headers();
@@ -10,7 +10,7 @@ myHeaders.append("Content-Type", "application/json");
 
 var raw = JSON.stringify({
   "title": title,
-  "status": "pending",
+  "status": status,
   "dueDate": dueDate
 });
 

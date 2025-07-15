@@ -1,16 +1,19 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import createTask from '../api/CreateTask';
-import AuthChecker from '../AuthChecker';
 import AddIcon from '@mui/icons-material/Add';
 import PropTypes from 'prop-types';
-import EnhancedTable from '../components/TaskList';
+import MenuItem from '@mui/material/MenuItem'; // Import MenuItem for dropdown options
+import Select from '@mui/material/Select'; // Import Select for dropdown
+import InputLabel from '@mui/material/InputLabel'; // Import InputLabel for Select label
+import FormControl from '@mui/material/FormControl'; // Import FormControl to wrap Select and InputLabel
+import dayjs from 'dayjs'; // Import dayjs for date handling
 
 const style = {
   position: 'absolute',
@@ -23,6 +26,9 @@ const style = {
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
+  display: 'flex', // Use flexbox for better layout of form fields
+  flexDirection: 'column', // Arrange items vertically
+  gap: '16px', // Add space between form fields
 };
 
 export default function AddTaskModal(props) {
@@ -30,77 +36,105 @@ export default function AddTaskModal(props) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [title, setTitle] = useState('');
-  const [status, setStatus] = useState('');
-  const [dueDate, setDueDate] = useState('');
+  const [status, setStatus] = useState('pending'); // Default status to 'pending'
+  const [dueDate, setDueDate] = useState(null); // Initialize dueDate as null for DatePicker
   const { allTheTasks } = props;
 
   const handleAdd = async () => {
+    // Format dueDate to 'YYYY-MM-DD' string if it's a dayjs object
+    const formattedDueDate = dueDate ? dayjs(dueDate).format('YYYY-MM-DD') : '';
 
     const payload = {
-
       title: title,
       status: status,
-      dueDate: dueDate,
-
-    } 
-    await createTask(payload)
-    .then()
-    .catch((e)=>{
-        null
+      dueDate: formattedDueDate,
     }
-    )
-    handleClose();
-    allTheTasks();
-    console.log("hellosss");
-    
-}
 
-
-    
+    console.log(payload)
+    try {
+      await createTask(payload);
+      handleClose();
+      allTheTasks(); // Refresh tasks after adding
+      // Optionally clear form fields after successful submission
+      setTitle('');
+      setStatus('pending');
+      setDueDate(null);
+    } catch (e) {
+      console.error("Error creating task:", e);
+      // Handle error, e.g., show an alert to the user
+      alert("Failed to create task. Please try again.");
+    }
+  }
 
   return (
-<div>
-      <AddIcon onClick={handleOpen}/>
+    <div>
+      <AddIcon onClick={handleOpen} sx={{ cursor: 'pointer' }} /> {/* Add cursor pointer for better UX */}
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        aria-labelledby="add-task-modal-title"
+        aria-describedby="add-task-modal-description"
       >
-      <Box
-        sx={style}
-        component="form"
-        noValidate
-        autoComplete="off"
-      >
-        <TextField id="outlined-basic" label="Title" variant="outlined" 
-        value={title}
-        onChange={(event) => {
-        setTitle(event.target.value);
-        }}/>
-        <TextField id="filled-basic" label="Status" variant="filled" 
-        value={status}
-        onChange={(event) => {
-        setStatus(event.target.value);
-        }}/>    
-        <TextField id="standard-basic" label="Due Date" variant="standard" 
-        value={dueDate}
-        onChange={(event) => {
-        setDueDate(event.target.value);
-        }}/>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={()=>{ handleAdd();}}>Submit</Button> 
-      </Box>
+        <Box
+          sx={style}
+          component="form"
+          noValidate
+          autoComplete="off"
+        >
+          {/* Title TextField */}
+          <TextField
+            id="task-title"
+            label="Title"
+            variant="outlined"
+            value={title}
+            onChange={(event) => {
+              setTitle(event.target.value);
+            }}
+            fullWidth
+          />
+
+          {/* Status Dropdown (Select) */}
+          <FormControl fullWidth>
+            <InputLabel id="task-status-label">Status</InputLabel>
+            <Select
+              labelId="task-status-label"
+              id="task-status"
+              value={status}
+              label="Status"
+              onChange={(event) => {
+                setStatus(event.target.value);
+              }}
+            >
+              <MenuItem value="pending">Pending</MenuItem>
+              <MenuItem value="in-progress">In-Progress</MenuItem>
+              <MenuItem value="testing">Testing</MenuItem>
+              <MenuItem value="done">Done</MenuItem>
+            </Select>
+          </FormControl>
+
+          {/* Due Date DatePicker */}
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Due Date"
+              value={dueDate}
+              onChange={(newValue) => {
+                setDueDate(newValue);
+              }}
+              renderInput={(params) => <TextField {...params} fullWidth />}
+            />
+          </LocalizationProvider>
+
+          {/* Buttons */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+            <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+            <Button variant="contained" onClick={handleAdd}>Submit</Button>
+          </Box>
+        </Box>
       </Modal>
     </div>
-
   );
 }
 
 AddTaskModal.propTypes = {
   allTheTasks: PropTypes.func.isRequired,
 };
-
-
-
-

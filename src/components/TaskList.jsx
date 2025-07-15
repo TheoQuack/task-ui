@@ -7,50 +7,24 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { useState, useEffect } from 'react';
 import getAllTasks from "../api/getAllTasks";
-import { Button } from '@mui/material';
 import deleteTask from '../api/deleteTasks';
 import AuthChecker from '../AuthChecker';
-import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import DeleteConfirmationModal from '../modals/deleteConfirmationModal';
 import UpdateTaskModal from '../modals/updateTaskModal';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import AddTaskModal from '../modals/addTaskModal';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-
-
-// function descendingComparator(a, b, orderBy) {
-//   if (b[orderBy] < a[orderBy]) {
-//     return -1;
-//   }
-//   if (b[orderBy] > a[orderBy]) {
-//     return 1;
-//   }
-//   return 0;
-// }
-
-// function getComparator(order, orderBy) {
-//   return order === 'desc'
-//     ? (a, b) => descendingComparator(a, b, orderBy)
-//     : (a, b) => -descendingComparator(a, b, orderBy);
-// }
 
 const headCells = [
   {
@@ -190,14 +164,9 @@ EnhancedTableToolbar.propTypes = {
 
 
 export default function EnhancedTable() {
-
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
-  // const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  // const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
   const [rows, setTasks] = useState([]);
   const allTheTasks = async () => {
       await getAllTasks()
@@ -205,12 +174,10 @@ export default function EnhancedTable() {
   };
 
   useEffect(()=>{
-       // Set a timeout to update the message after 3 seconds
     const timerId = setTimeout(() => {
       allTheTasks();
     }, 10);
 
-    // Return a cleanup function to clear the timeout
     return () => {
       clearTimeout(timerId);
     };
@@ -252,31 +219,6 @@ export default function EnhancedTable() {
     console.log(newSelected);
   };
 
-  // const handleChangePage = (event, newPage) => {
-  //   setPage(newPage);
-  // };
-
-  // const handleChangeRowsPerPage = (event) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10));
-  //   setPage(0);
-  // };
-
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
-
-  // Avoid a layout jump when reaching the last page with empty rows.
-  // const emptyRows =
-  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  // const visibleRows =
-  // React.useMemo(
-  //   () =>
-  //     [...rows]
-  //       .sort(getComparator(order, orderBy))
-  //       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-  //   [order, orderBy, page, rowsPerPage],
-  // );
 
   return (
     <>
@@ -288,7 +230,6 @@ export default function EnhancedTable() {
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
           >
             <EnhancedTableHead
               numSelected={selected.length}
@@ -340,27 +281,9 @@ export default function EnhancedTable() {
                   </TableRow>
                 );
               })}
-              {/* {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )} */}
             </TableBody>
           </Table>
         </TableContainer>
-        {/* <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        /> */}
       </Paper>
     </Box>
     </>

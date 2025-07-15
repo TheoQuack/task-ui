@@ -3,7 +3,6 @@
 
 const createTask = async ({title, dueDate}) => {
 
-console.log(dueDate, title)
     
 var myHeaders = new Headers();
 myHeaders.append("Authorization", `Bearer ${localStorage.getItem("TOKEN")}`);
@@ -23,8 +22,6 @@ var requestOptions = {
 };
 
 fetch("http://localhost:3000/api/tasks", requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
   .catch(error => console.log('error', error));
 
 }

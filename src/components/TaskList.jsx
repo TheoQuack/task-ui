@@ -31,6 +31,7 @@ import { useNavigate } from 'react-router-dom';
 import DeleteConfirmationModal from '../modals/deleteConfirmationModal';
 import UpdateTaskModal from '../modals/updateTaskModal';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import AddTaskModal from '../modals/addTaskModal';
 
 
 
@@ -165,18 +166,12 @@ function EnhancedTableToolbar(props) {
         <Tooltip title="Delete" >
           <DeleteConfirmationModal deleteFunc={handleDelete}/>
         </Tooltip>
-        <Tooltip title="Update">
-          <UpdateTaskModal selectedID={handleUpdate}/>
-        </Tooltip>
         </>
         
       ) : (
         <Tooltip>
           <IconButton>
-            <FilterListIcon />
-          </IconButton>
-          <IconButton>
-            <AddIcon onClick={()=>navigate('/newtask')}/>
+            <AddTaskModal allTheTasks={()=>{allTheTasks()}} />
           </IconButton>
         </Tooltip>
       )}

@@ -29,6 +29,9 @@ import AuthChecker from '../AuthChecker';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import DeleteConfirmationModal from '../modals/deleteConfirmationModal';
+import UpdateTaskModal from '../modals/updateTaskModal';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+
 
 
 // function descendingComparator(a, b, orderBy) {
@@ -128,17 +131,22 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
+ const handleUpdate = async (id) => {
+    UpdateTaskModal
+    console.log(id);
+  }
+  
 
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, allTheTasks } = props;
+  const { numSelected, allTheTasks, selectedID } = props;
   const navigate = useNavigate();
 
   const handleDelete = async () => {
-    await deleteTask(props.selectedID);
+    await deleteTask(selectedID);
     allTheTasks();
-}
-  
+  }
+
   return (
     <Toolbar
       sx={[
@@ -153,9 +161,15 @@ function EnhancedTableToolbar(props) {
       ]}
     >
       {numSelected > 0 ? (
+        <>
         <Tooltip title="Delete" >
           <DeleteConfirmationModal deleteFunc={handleDelete}/>
         </Tooltip>
+        <Tooltip title="Update">
+          <UpdateTaskModal selectedID={handleUpdate}/>
+        </Tooltip>
+        </>
+        
       ) : (
         <Tooltip>
           <IconButton>
@@ -173,7 +187,10 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   selectedID: PropTypes.array.isRequired,
-  allTheTasks: PropTypes.func.isRequired
+  allTheTasks: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
+  dueDate: PropTypes.string.isRequired,
 };
 
 
@@ -295,23 +312,27 @@ export default function EnhancedTable() {
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.id)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={row.id}
                     selected={isItemSelected}
                     sx={{ cursor: 'pointer' }}
-                  > 
+                  >
                     <TableCell padding="checkbox">
                       <Checkbox
+                        onClick={(event) => handleClick(event, row.id)}
                         color="primary"
                         checked={isItemSelected}
-                        inputProps={{
+                        inputProps={{ 
                           'aria-labelledby': labelId,
                         }}
                       />
+                      <IconButton>
+                          <UpdateTaskModal selectedID={row.id}/>
+                      </IconButton>
                     </TableCell>
+                    
                     <TableCell
                       component="th"
                       id={labelId}

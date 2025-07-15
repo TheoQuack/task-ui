@@ -8,7 +8,19 @@ import EnhancedTable from '../components/TaskList';
 import updateTask from '../api/updateTask';
 import Button from '@mui/material/Button';
 
-    
+// Define a style for the modal box
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400, // You can adjust this width
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 export default function UpdateTaskModal(props) {
   const { selectedID } = props
   const [open, setOpen] = useState(false);
@@ -36,7 +48,6 @@ export default function UpdateTaskModal(props) {
       }
       else{
         console.log('return');
-        <EnhancedTable/>
       }
     }
 
@@ -53,8 +64,8 @@ export default function UpdateTaskModal(props) {
         aria-describedby="modal-modal-description"
       >
       <Box
+        sx={style}
         component="form"
-        sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
         noValidate
         autoComplete="off"
       >
@@ -74,7 +85,7 @@ export default function UpdateTaskModal(props) {
         setDueDate(event.target.value);
         }}/>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={()=>{ handleUpdate(); handleClose();}}>Submit</Button>
+        <Button onClick={()=>{ handleUpdate();}}>Submit</Button> 
       </Box>
       </Modal>
     </div>
@@ -83,5 +94,5 @@ export default function UpdateTaskModal(props) {
 }
 
 UpdateTaskModal.propTypes = {
-  selectedID: PropTypes.func.isRequired
+  selectedID: PropTypes.string.isRequired
 };

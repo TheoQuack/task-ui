@@ -7,22 +7,27 @@ import Home from './components/HomePage';
 import AddTaskForm from './components/AddTaskForm';
 import EnhancedTable from './components/TaskList';
 import Logout from './components/Logout';
+import React from 'react';
+import { AuthProvider } from './context/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
+import ProfileDashboard from './components/ProfileDashboard';
+import LoginForm from './components/LoginForm';
 
 function App() {
 
   return (
   
-
-  <Router>
-    <Routes>
-      <Route path="/" element={<Home/>}></Route>
-      <Route path="/registration" element={<Registration/>}></Route>
-      <Route path="/login" element={<UserLogin/>}></Route>
-      <Route path="/tasks" element={<EnhancedTable/>}></Route>
-      <Route path='/newtask' element={<AddTaskForm/>}></Route>
-      <Route path='/logout' element={<Logout/>}></Route>
-    </Routes>
-  </Router>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home/>}></Route>
+        <Route path="/registration" element={<Registration/>}></Route>
+        <Route path="/login" element={<LoginForm/>}></Route>
+        <Route path="/tasks" element={<EnhancedTable/>}></Route>
+        <Route path='/newtask' element={<AddTaskForm/>}></Route>
+        <Route path='/logout' element={<Logout/>}></Route>
+        <Route path='/profile' element={<ProfileDashboard/>}></Route>
+      </Routes>
+    </Router>
 
   
 

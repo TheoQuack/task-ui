@@ -21,7 +21,7 @@ export default function LoginForm() {
         try{
             await login(form)
             navigate('/profile')
-        } catch(err) {
+        } catch {
             setError("Invalid Credentials");
         }
     };

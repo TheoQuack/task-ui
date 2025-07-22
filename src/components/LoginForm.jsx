@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 export default function LoginForm() {
 
     const { login } = useAuth();
-    const { form, setForm } = useState({ email: '', password: '' });
+    const [ form, setForm ] = useState({ email: '', password: ''});
     const [ error, setError ] = useState(null);
 
     const handleChange = (e) => {
@@ -15,6 +15,7 @@ export default function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        console.log(form);
         try{
             await login(form)
         } catch(err) {

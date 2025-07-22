@@ -1,11 +1,9 @@
 import { AppBar, Toolbar, Typography, Box, Grid } from '@mui/material';
 import { Link } from "react-router-dom"; 
-import AuthChecker from '../AuthChecker';
 
 export default function Home() {
     return (
         <>
-        <AuthChecker/>
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static" sx={{ backgroundColor: '#424242' }}>
                 <Toolbar>

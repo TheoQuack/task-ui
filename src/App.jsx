@@ -16,18 +16,19 @@ import LoginForm from './components/LoginForm';
 function App() {
 
   return (
-  
+  <AuthProvider>
     <Router>
       <Routes>
         <Route path="/" element={<Home/>}></Route>
         <Route path="/registration" element={<Registration/>}></Route>
-        <Route path="/login" element={<LoginForm/>}></Route>
+        <Route path="/login" element={<LoginForm  />}></Route>
         <Route path="/tasks" element={<EnhancedTable/>}></Route>
         <Route path='/newtask' element={<AddTaskForm/>}></Route>
         <Route path='/logout' element={<Logout/>}></Route>
-        <Route path='/profile' element={<ProfileDashboard/>}></Route>
+        <Route path='/profile' element={<PrivateRoute><ProfileDashboard/></PrivateRoute>}></Route>
       </Routes>
     </Router>
+  </AuthProvider>
 
   
 

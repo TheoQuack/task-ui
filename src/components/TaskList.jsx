@@ -18,7 +18,6 @@ import { visuallyHidden } from '@mui/utils';
 import { useState, useEffect } from 'react';
 import getAllTasks from "../api/getAllTasks";
 import deleteTask from '../api/deleteTasks';
-import AuthChecker from '../AuthChecker';
 import { useNavigate } from 'react-router-dom';
 import DeleteConfirmationModal from '../modals/deleteConfirmationModal';
 import UpdateTaskModal from '../modals/updateTaskModal';
@@ -222,7 +221,6 @@ export default function EnhancedTable() {
 
   return (
     <>
-    <AuthChecker/>
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar allTheTasks={allTheTasks} numSelected={selected.length} selectedID={selected}/>

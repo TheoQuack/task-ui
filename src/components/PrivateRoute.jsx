@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 
 const PrivateRoute = ({children}) => {
     const { auth } = useAuth();
+    // console.log({auth}, 'dsigsgsi');
     return auth?.token ? children : <Navigate to="/login" replace/>;
 };
 

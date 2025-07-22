@@ -1,4 +1,4 @@
-import AuthChecker from "../AuthChecker";
+
 import { Navigate, Route, } from "react-router-dom";
 
 export default function Logout(){
@@ -7,6 +7,6 @@ export default function Logout(){
  console.log("hello")
  
 
- return <AuthChecker/>
+ return "<AuthChecker/>"
 
 }

@@ -1,8 +1,9 @@
-const deleteTask = async (id) => {
+const deleteTask = async (id, token) => {
 
+const API_URL = import.meta.env.VITE_API_URL
 
 var myHeaders = new Headers();
-myHeaders.append("Authorization", `Bearer ${localStorage.getItem("TOKEN")}`);
+myHeaders.append("Authorization", `Bearer ${token}`);
 
 var requestOptions = {
   method: 'DELETE',
@@ -11,7 +12,7 @@ var requestOptions = {
 };
 
 for (let i = 0; i < id.length; i++) {
-   await fetch(`http://localhost:3000/api/tasks/${id[i]}`, requestOptions)
+   await fetch(`${API_URL}/api/tasks/${id[i]}`, requestOptions)
   .catch(error => console.log('error', error));
 }
 

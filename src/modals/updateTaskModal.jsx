@@ -11,6 +11,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; 
 import dayjs from 'dayjs'; 
+import { useAuth } from '../context/AuthContext';
 
 const style = {
   position: 'absolute',
@@ -36,6 +37,7 @@ export default function UpdateTaskModal(props) {
   const [title, setTitle] = useState(initialTitle || ''); 
   const [status, setStatus] = useState(initialStatus || 'pending'); 
   const [dueDate, setDueDate] = useState(initialDueDate ? dayjs(initialDueDate) : null); 
+  const { auth } = useAuth();
 
   useEffect(() => {
     setTitle(initialTitle || '');
@@ -55,7 +57,7 @@ export default function UpdateTaskModal(props) {
     }
 
     try {
-      const response = await updateTask(payload);
+      const response = await updateTask(payload, auth.token);
 
       if (response && response.error) { // Assuming updateTask returns a response object
         console.error("Update Error:", response.error);

@@ -14,6 +14,7 @@ import Select from '@mui/material/Select'; // Import Select for dropdown
 import InputLabel from '@mui/material/InputLabel'; // Import InputLabel for Select label
 import FormControl from '@mui/material/FormControl'; // Import FormControl to wrap Select and InputLabel
 import dayjs from 'dayjs'; // Import dayjs for date handling
+import { useAuth } from '../context/AuthContext';
 
 const style = {
   position: 'absolute',
@@ -39,9 +40,9 @@ export default function AddTaskModal(props) {
   const [status, setStatus] = useState('pending'); // Default status to 'pending'
   const [dueDate, setDueDate] = useState(null); // Initialize dueDate as null for DatePicker
   const { allTheTasks } = props;
+  const { auth } = useAuth();
 
   const handleAdd = async () => {
-    // Format dueDate to 'YYYY-MM-DD' string if it's a dayjs object
     const formattedDueDate = dueDate ? dayjs(dueDate).format('YYYY-MM-DD') : '';
 
     const payload = {
@@ -51,7 +52,7 @@ export default function AddTaskModal(props) {
     }
 
     try {
-      await createTask(payload);
+      await createTask(payload, auth.token);
       handleClose();
       allTheTasks(); // Refresh tasks after adding
       // Optionally clear form fields after successful submission

@@ -23,6 +23,7 @@ import DeleteConfirmationModal from '../modals/deleteConfirmationModal';
 import UpdateTaskModal from '../modals/updateTaskModal';
 import AddTaskModal from '../modals/addTaskModal';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useAuth } from '../context/AuthContext';
 
 
 const headCells = [
@@ -111,9 +112,10 @@ EnhancedTableHead.propTypes = {
 function EnhancedTableToolbar(props) {
   const { numSelected, allTheTasks, selectedID } = props;
   const navigate = useNavigate();
+  const { auth } = useAuth();
 
   const handleDelete = async () => {
-    await deleteTask(selectedID);
+    await deleteTask(selectedID, auth.token);
     allTheTasks();
   }
 
@@ -167,8 +169,10 @@ export default function EnhancedTable() {
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
   const [rows, setTasks] = useState([]);
+  const { auth } = useAuth();
+
   const allTheTasks = async () => {
-      await getAllTasks()
+      await getAllTasks(auth.token)
       .then(e => {setTasks(e)})
   };
 
@@ -214,7 +218,7 @@ export default function EnhancedTable() {
         selected.slice(selectedIndex + 1),
       );
     } 
-    setSelected(newSelected);
+    setSelected(newSelected); 
   };
 
 

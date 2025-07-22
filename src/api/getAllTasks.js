@@ -1,11 +1,13 @@
 
 
-const getAllTasks = async () => {
 
+const getAllTasks = async (token) => {
+
+    const API_URL = import.meta.env.VITE_API_URL
 
     try{ 
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${JSON.parse(localStorage.getItem("auth")).token}`);
+    myHeaders.append("Authorization", `Bearer ${token}`);
 
     var requestOptions = {
     method: 'GET',
@@ -13,7 +15,7 @@ const getAllTasks = async () => {
     redirect: 'follow'
     };
 
-    const response = await fetch("http://localhost:3000/api/tasks", requestOptions)
+    const response = await fetch(`${API_URL}/api/tasks`, requestOptions)
     .then((response) => response.json())
     .catch(error => {throw error});
 

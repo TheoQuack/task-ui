@@ -4,9 +4,8 @@ const getAllTasks = async () => {
 
 
     try{ 
-
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("TOKEN")}`);
+    myHeaders.append("Authorization", `Bearer ${JSON.parse(localStorage.getItem("auth")).token}`);
 
     var requestOptions = {
     method: 'GET',

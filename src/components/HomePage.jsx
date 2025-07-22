@@ -1,7 +1,12 @@
-import { AppBar, Toolbar, Typography, Box, Grid } from '@mui/material';
-import { Link } from "react-router-dom"; 
+import { AppBar, Toolbar, Typography, Box, Button } from '@mui/material';
+import { Link, useNavigate } from "react-router-dom"; 
+import { useAuth } from '../context/AuthContext';
 
 export default function Home() {
+
+    const { logout } = useAuth();
+    const navigate = useNavigate()
+
     return (
         <>
         <Box sx={{ flexGrow: 1 }}>
@@ -10,15 +15,15 @@ export default function Home() {
                     <Typography component="div" sx={{ flexGrow: 1 }}>
                         TaskMan (beta) 
                     </Typography>
-                    <Link to="/" style={{ textDecoration: 'none', color: 'white', marginRight: '20px' }} >
-                        <Typography variant="button">Home</Typography>
+                    <Link to="/profile" style={{ textDecoration: 'none', color: 'white', marginRight: '20px' }} >
+                        <Typography variant="button">Profile</Typography>
                     </Link>
                     <Link to="/tasks" style={{ textDecoration: 'none', color: 'white', marginRight: '20px' }}>
                         <Typography variant="button">My Tasks</Typography>
                     </Link>
-                    <Link to="/logout" style={{ textDecoration: 'none', color: 'white' }}>
+                    <Button onClick={()=>{logout(); navigate('/login')}} style={{ textDecoration: 'none', color: 'white' }}>
                         <Typography variant="button">Logout</Typography>
-                    </Link>
+                    </Button>
                 </Toolbar>
             </AppBar>
 

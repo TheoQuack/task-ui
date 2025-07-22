@@ -1,8 +1,11 @@
 import { useState  } from  'react';
 import { TextField, Button, Typography } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginForm() {
+
+    const navigate = useNavigate();
 
     const { login } = useAuth();
     const [ form, setForm ] = useState({ email: '', password: ''});
@@ -15,9 +18,9 @@ export default function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log(form);
         try{
             await login(form)
+            navigate('/profile')
         } catch(err) {
             setError("Invalid Credentials");
         }

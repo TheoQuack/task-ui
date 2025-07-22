@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Typography, Box, Button, CircularProgress } from '@mui/material'; 
+import { useNavigate } from 'react-router-dom';
 
 const ProfileDashboard = () => {
-
+    const navigate = useNavigate();
     const { auth, logout } = useAuth();
     const [ profileData, setProfileData ] = useState(null);
     const [ loading, setLoading ] = useState(true);
+    
     
     useEffect(()=>{
         const fetchProtectedData = async () => {
@@ -55,6 +57,9 @@ const ProfileDashboard = () => {
                 <pre>{JSON.stringify(profileData, null, 2)}</pre>
             </Box>
 
+            <Button variant='contained' color='secondary' onClick={()=>{navigate('/')}} sx={{ mt: 2 }}>
+                Back
+            </Button>
             <Button variant='contained' color='secondary' onClick={logout} sx={{ mt: 2 }}>
                 Logout
             </Button>

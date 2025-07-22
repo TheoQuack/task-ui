@@ -215,7 +215,6 @@ export default function EnhancedTable() {
       );
     } 
     setSelected(newSelected);
-    console.log(newSelected);
   };
 
 

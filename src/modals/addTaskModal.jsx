@@ -50,7 +50,6 @@ export default function AddTaskModal(props) {
       dueDate: formattedDueDate,
     }
 
-    console.log(payload)
     try {
       await createTask(payload);
       handleClose();

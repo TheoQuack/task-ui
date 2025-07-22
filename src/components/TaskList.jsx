@@ -164,7 +164,7 @@ EnhancedTableToolbar.propTypes = {
 
 
 
-export default function EnhancedTable() {
+export default function TaskList() {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { Typography, Box, Button, CircularProgress } from '@mui/material'; 
 import { useNavigate } from 'react-router-dom';
 
@@ -8,12 +8,13 @@ const ProfileDashboard = () => {
     const { auth, logout } = useAuth();
     const [ profileData, setProfileData ] = useState(null);
     const [ loading, setLoading ] = useState(true);
+    const API_URL = import.meta.env.VITE_API_URL;
     
     
     useEffect(()=>{
         const fetchProtectedData = async () => {
             try{ 
-                const res = await fetch(`http://localhost:3000/api/users/${auth.user}`, {
+                const res = await fetch(`${API_URL}/api/users/${auth.user}`, {
                     headers: {
                         Authorization: `Bearer ${auth?.token}`
                     },
@@ -30,12 +31,16 @@ const ProfileDashboard = () => {
             finally{
                 setLoading(false);
             }
+            
         };
+    
 
         if (auth?.token){
             fetchProtectedData();
             }
         }, [auth]);
+
+        console.log(profileData)
 
         if (!auth) {
             return <Typography variant='h6'> You are not logged in</Typography>;
@@ -49,7 +54,7 @@ const ProfileDashboard = () => {
     return (
         <Box p={3} >
             <Typography variant="h4"> Welcome, {profileData.name} </Typography>
-            <Typography> Email: {profileData.user} </Typography>
+            <Typography> Email: {profileData.email} </Typography>
             <Typography> UserID: {profileData.id} </Typography>
 
             <Box mt={2}>

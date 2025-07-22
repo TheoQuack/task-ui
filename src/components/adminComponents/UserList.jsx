@@ -16,22 +16,21 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
 import { useState, useEffect } from 'react';
-import getAllTasks from "../api/getAllTasks";
-import deleteTask from '../api/deleteTasks';
 import { useNavigate } from 'react-router-dom';
-import DeleteConfirmationModal from '../modals/deleteConfirmationModal';
-import UpdateTaskModal from '../modals/updateTaskModal';
-import AddTaskModal from '../modals/addTaskModal';
+import DeleteConfirmationModal from '../../modals/deleteConfirmationModal';
+import AddTaskModal from '../../modals/addTaskModal';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useAuth } from '../context/AuthContext';
-
+import { useAuth } from '../../context/AuthContext';
+import getAllUsers from '../../api/getAllUsers';
+import deleteUser from '../../api/deleteUsers';
+import UpdateUserModal from '../../modals/updateUserModal';
 
 const headCells = [
   {
-    id: 'Task Name',
+    id: 'User Name',
     numeric: false,
     disablePadding: true,
-    label: 'Tasks',
+    label: 'Name',
   },
   {
     id: 'Status ',
@@ -40,10 +39,10 @@ const headCells = [
     label: 'Status',
   },
   {
-    id: 'Due Date',
+    id: 'Birthday',
     numeric: true,
     disablePadding: false,
-    label: 'Due Date',
+    label: 'Birthday',
   }
 ];
 
@@ -110,15 +109,20 @@ EnhancedTableHead.propTypes = {
 
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, allTheTasks, selectedID } = props;
+  const { numSelected, allTheUsers, selectedID } = props;
   const navigate = useNavigate();
   const { auth } = useAuth();
 
-  const handleDelete = async () => {
-    await deleteTask(selectedID, auth.token);
-    allTheTasks();
+  const handleUpdateRefresh = async () => {
+    allTheUsers();
   }
 
+  const handleDelete = async () => {
+    await deleteUser(selectedID, auth.token);
+    handleUpdateRefresh();
+  }
+
+  
   return (
     <Toolbar
       sx={[
@@ -134,6 +138,8 @@ function EnhancedTableToolbar(props) {
     >
       {numSelected > 0 ? (
         <>
+
+
         <Tooltip title="Delete" >
           <DeleteConfirmationModal deleteFunc={handleDelete}/>
         </Tooltip>
@@ -141,11 +147,11 @@ function EnhancedTableToolbar(props) {
         
       ) : (
         <Tooltip>
-           <Tooltip title="Back" >
+          <Tooltip title="Back" >
           <ArrowBackIcon fontSize="small" onClick={()=>{navigate('/')}}/>
         </Tooltip>
           <IconButton>
-            <AddTaskModal allTheTasks={allTheTasks} />
+            <AddTaskModal allTheTasks={allTheUsers} />
           </IconButton>
         </Tooltip>
       )}
@@ -156,7 +162,7 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   selectedID: PropTypes.array.isRequired,
-  allTheTasks: PropTypes.func.isRequired,
+  allTheUsers: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   dueDate: PropTypes.string.isRequired,
@@ -164,27 +170,29 @@ EnhancedTableToolbar.propTypes = {
 
 
 
-export default function TaskList() {
+export default function UserList() {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
-  const [rows, setTasks] = useState([]);
+  const [rows, setUsers] = useState([]);
   const { auth } = useAuth();
 
-  const allTheTasks = async () => {
-      await getAllTasks(auth.token)
-      .then(e => {setTasks(e)})
+  const allTheUsers = async () => {
+      await getAllUsers(auth.token)
+      .then(e => {setUsers(e)})
   };
 
   useEffect(()=>{
     const timerId = setTimeout(() => {
-      allTheTasks();
+      allTheUsers();
     }, 10);
 
     return () => {
       clearTimeout(timerId);
     };
-  }, [])
+    
+  }, [rows])
+  
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -226,7 +234,7 @@ export default function TaskList() {
     <>
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar allTheTasks={allTheTasks} numSelected={selected.length} selectedID={selected}/>
+        <EnhancedTableToolbar allTheUsers={allTheUsers} numSelected={selected.length} selectedID={selected}/>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -265,7 +273,7 @@ export default function TaskList() {
                         }}
                       />
                       <IconButton>
-                          <UpdateTaskModal selectedID={row.id}/>
+                          <UpdateUserModal selectedID={row.id}/>
                       </IconButton>
                     </TableCell>
                     
@@ -275,10 +283,10 @@ export default function TaskList() {
                       scope="row"
                       padding="none"
                     >
-                      {row.title}
+                      {row.name}
                     </TableCell>
-                    <TableCell align="right">{row.status}</TableCell>
-                    <TableCell align="right">{row.dueDate}</TableCell>
+                    <TableCell align="right">{row.role}</TableCell>
+                    <TableCell align="right">{row.birthDate}</TableCell>
                   </TableRow>
                 );
               })}

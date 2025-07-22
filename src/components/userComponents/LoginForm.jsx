@@ -1,6 +1,6 @@
 import { useState  } from  'react';
 import { TextField, Button, Typography } from '@mui/material';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function LoginForm() {

@@ -30,7 +30,7 @@ const style = {
 };
 
 export default function UpdateTaskModal(props) {
-  const { selectedID, initialTitle, initialStatus, initialDueDate, refreshTasks } = props; 
+  const { selectedID, initialTitle, initialStatus, initialDueDate} = props; 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -65,9 +65,6 @@ export default function UpdateTaskModal(props) {
       } else {
         console.log('Task updated successfully');
         handleClose();
-        if (refreshTasks) {
-            refreshTasks();
-        }
       }
     } catch (error) {
       console.error('An unexpected error occurred during update:', error);

@@ -6,6 +6,7 @@ import { Link as RouterLink } from 'react-router-dom';
 export default function UserLogin() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -27,7 +28,7 @@ export default function UserLogin() {
                 redirect: 'follow'
             };
 
-            fetch("http://localhost:3000/api/login", requestOptions)
+            fetch(`${API_URL}/api/login`, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     console.log(result);

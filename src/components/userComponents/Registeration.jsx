@@ -1,4 +1,4 @@
-import { Box, TextField, Button, Typography, Container, Link } from '@mui/material';
+import { Box, TextField, Button, Typography, Container, Link, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
@@ -8,16 +8,12 @@ export default function Registration() {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [role, setRole] = useState('user');
     const navigate = useNavigate();
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (password !== confirmPassword) {
-            window.alert('Error: Passwords do not match');
-            return; // Prevent form submission if passwords don't match
-        }
 
         try {
             var myHeaders = new Headers();
@@ -26,10 +22,13 @@ export default function Registration() {
             var raw = JSON.stringify({
                 "name": name,
                 "birthDate": "2004-10-24", // Assuming this is a static value for now
-                "role": "user", // Assuming this is a static value for now
+                // Use the selected role from the state
+                "role": role,
                 "email": email,
                 "password": password
             });
+
+            console.log(raw)
 
             var requestOptions = {
                 method: 'POST',
@@ -38,24 +37,30 @@ export default function Registration() {
                 redirect: 'follow'
             };
 
-            fetch("http://localhost:3000/api/register", requestOptions)
+            fetch(`${API_URL}/api/register`, requestOptions)
                 .then(response => response.text())
                 .then((e) => {
                     let parsedData = JSON.parse(e);
                     if (parsedData.error) {
-                        throw new Error("Registration Error");
+                        // Use a custom message box instead of window.alert
+                        console.error('Registration Error:', parsedData.error);
+                        // You might want to display this error in a more user-friendly way, e.g., a Snackbar or a custom dialog.
+                        // For now, we'll log it and prevent navigation.
+                        return;
                     }
                     navigate('/login');
                 })
                 .catch(error => {
-                    console.log(error);
-                    window.alert('An error occurred during registration.'); // Added user-friendly alert
+                    console.error("Fetch error during registration:", error);
+                    // Use a custom message box instead of window.alert
+                    // You might want to display this error in a more user-friendly way, e.g., a Snackbar or a custom dialog.
                 });
 
 
         } catch (err) {
-            console.log(err);
-            window.alert('An unexpected error occurred.'); // Added user-friendly alert for general errors
+            console.error("Unexpected error during registration:", err);
+            // Use a custom message box instead of window.alert
+            // You might want to display this error in a more user-friendly way, e.g., a Snackbar or a custom dialog.
         }
 
     }
@@ -129,15 +134,20 @@ export default function Registration() {
                         onChange={(e) => { setPassword(e.target.value) }}
                         fullWidth
                     />
-                    <TextField
-                        id="confirm-password-input" // Changed ID for clarity
-                        label="Confirm Your Password"
-                        placeholder='Confirm Password'
-                        type="password" // Important for hiding characters
-                        value={confirmPassword}
-                        onChange={(e) => { setConfirmPassword(e.target.value) }}
-                        fullWidth
-                    />
+                    {/* Role Selection Dropdown */}
+                    <FormControl fullWidth>
+                        <InputLabel id="role-select-label">Role</InputLabel>
+                        <Select
+                            labelId="role-select-label"
+                            id="role-select"
+                            value={role}
+                            label="Role"
+                            onChange={(e) => setRole(e.target.value)}
+                        >
+                            <MenuItem value="user">User</MenuItem>
+                            <MenuItem value="administrator">Admin</MenuItem>
+                        </Select>
+                    </FormControl>
 
                     <Button
                         type="submit"

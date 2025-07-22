@@ -1,6 +1,6 @@
 import { AppBar, Toolbar, Typography, Box, Button } from '@mui/material';
 import { Link, useNavigate } from "react-router-dom"; 
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Home() {
 
@@ -20,6 +20,9 @@ export default function Home() {
                     </Link>
                     <Link to="/tasks" style={{ textDecoration: 'none', color: 'white', marginRight: '20px' }}>
                         <Typography variant="button">My Tasks</Typography>
+                    </Link>
+                    <Link to="/users" style={{ textDecoration: 'none', color: 'white', marginRight: '20px' }}>
+                        <Typography variant="button">UserList</Typography>
                     </Link>
                     <Button onClick={()=>{logout(); navigate('/login')}} style={{ textDecoration: 'none', color: 'white' }}>
                         <Typography variant="button">Logout</Typography>

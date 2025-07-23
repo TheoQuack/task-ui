@@ -33,16 +33,16 @@ const style = {
 };
 
 export default function AddTaskModal(props) {
+  const { allTheTasks } = props;
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [title, setTitle] = useState('');
   const [status, setStatus] = useState('pending'); // Default status to 'pending'
   const [dueDate, setDueDate] = useState(null); // Initialize dueDate as null for DatePicker
-  const { allTheTasks } = props;
   const { auth } = useAuth();
 
-  const handleAdd = async () => {
+  const handleAdd = async (e) => {
     const formattedDueDate = dueDate ? dayjs(dueDate).format('YYYY-MM-DD') : '';
 
     const payload = {
@@ -51,14 +51,16 @@ export default function AddTaskModal(props) {
       dueDate: formattedDueDate,
     }
 
+    e.preventDefault();
+
     try {
       await createTask(payload, auth.token);
       handleClose();
-      allTheTasks(); // Refresh tasks after adding
       // Optionally clear form fields after successful submission
       setTitle('');
       setStatus('pending');
       setDueDate(null);
+      allTheTasks();
     } catch (e) {
       console.error("Error creating task:", e);
       // Handle error, e.g., show an alert to the user
@@ -134,7 +136,3 @@ export default function AddTaskModal(props) {
     </div>
   );
 }
-
-AddTaskModal.propTypes = {
-  allTheTasks: PropTypes.func.isRequired,
-};

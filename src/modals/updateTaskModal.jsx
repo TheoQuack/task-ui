@@ -30,7 +30,7 @@ const style = {
 };
 
 export default function UpdateTaskModal(props) {
-  const { selectedID, initialTitle, initialStatus, initialDueDate} = props; 
+  const { selectedID, initialTitle, initialStatus, initialDueDate, allTheTasks} = props; 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -65,6 +65,7 @@ export default function UpdateTaskModal(props) {
       } else {
         console.log('Task updated successfully');
         handleClose();
+        allTheTasks();
       }
     } catch (error) {
       console.error('An unexpected error occurred during update:', error);
@@ -177,4 +178,5 @@ UpdateTaskModal.propTypes = {
   initialStatus: PropTypes.string,
   initialDueDate: PropTypes.string, // Assuming date comes as a string like 'YYYY-MM-DD'
   refreshTasks: PropTypes.func, // Added a prop to call a function to refresh the task list
+  allTheTasks: PropTypes.func
 };

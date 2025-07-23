@@ -173,12 +173,18 @@ export default function TaskList() {
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
   const [rows, setTasks] = useState([]);
+  const [refresh, setRefresh ] = useState(false);
   const { auth } = useAuth();
 
   const allTheTasks = async () => {
       await getAllTasks(auth.token)
       .then(e => {setTasks(e)})
   };
+
+   const refreshUsers = async () => {
+      refresh ? setRefresh(false) : setRefresh(true);
+      console.log("Refreshing");
+  }
 
   useEffect(()=>{
     const timerId = setTimeout(() => {
@@ -188,7 +194,7 @@ export default function TaskList() {
     return () => {
       clearTimeout(timerId);
     };
-  }, [rows])
+  }, [refresh])
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -230,7 +236,7 @@ export default function TaskList() {
     <>
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar allTheTasks={allTheTasks} numSelected={selected.length} selectedID={selected}/>
+        <EnhancedTableToolbar allTheTasks={refreshUsers} numSelected={selected.length} selectedID={selected}/>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -269,7 +275,7 @@ export default function TaskList() {
                         }}
                       />
                       <IconButton>
-                          <UpdateTaskModal selectedID={row.id}/>
+                          <UpdateTaskModal allTheTasks={refreshUsers} selectedID={row.id}/>
                       </IconButton>
                     </TableCell>
                     

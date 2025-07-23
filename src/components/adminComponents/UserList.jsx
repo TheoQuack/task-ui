@@ -24,6 +24,7 @@ import { useAuth } from '../../context/AuthContext';
 import getAllUsers from '../../api/getAllUsers';
 import deleteUser from '../../api/deleteUsers';
 import UpdateUserModal from '../../modals/updateUserModal';
+import AddUserModal from '../../modals/addUserModal';
 
 const headCells = [
   {
@@ -151,7 +152,7 @@ function EnhancedTableToolbar(props) {
           <ArrowBackIcon fontSize="small" onClick={()=>{navigate('/')}}/>
         </Tooltip>
           <IconButton>
-            <AddTaskModal allTheTasks={allTheUsers} />
+            <AddUserModal allTheUsers={allTheUsers}/>
           </IconButton>
         </Tooltip>
       )}
@@ -175,12 +176,20 @@ export default function UserList() {
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
   const [rows, setUsers] = useState([]);
+  const [refresh, setRefresh ] = useState(false);
   const { auth } = useAuth();
+
 
   const allTheUsers = async () => {
       await getAllUsers(auth.token)
       .then(e => {setUsers(e)})
+      console.log("fetching");
   };
+
+  const refreshUsers = async () => {
+      refresh ? setRefresh(false) : setRefresh(true);
+      console.log("Refreshing");
+  }
 
   useEffect(()=>{
     const timerId = setTimeout(() => {
@@ -191,7 +200,7 @@ export default function UserList() {
       clearTimeout(timerId);
     };
     
-  }, [rows])
+  }, [refresh])
   
 
   const handleRequestSort = (event, property) => {
@@ -234,7 +243,7 @@ export default function UserList() {
     <>
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar allTheUsers={allTheUsers} numSelected={selected.length} selectedID={selected}/>
+        <EnhancedTableToolbar allTheUsers={refreshUsers} numSelected={selected.length} selectedID={selected}/>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -273,7 +282,7 @@ export default function UserList() {
                         }}
                       />
                       <IconButton>
-                          <UpdateUserModal selectedID={row.id}/>
+                          <UpdateUserModal selectedID={row.id} allTheUsers={refreshUsers}/>
                       </IconButton>
                     </TableCell>
                     

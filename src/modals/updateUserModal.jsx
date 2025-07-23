@@ -32,7 +32,7 @@ const style = {
 
 export default function UpdateUserModal(props) {
   // Props for user details: selectedID, initialName, initialBirthdate, initialRole
-  const { selectedID, initialName, initialBirthdate, initialRole} = props;
+  const { selectedID, initialName, initialBirthdate, initialRole, allTheUsers} = props;
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -61,7 +61,6 @@ export default function UpdateUserModal(props) {
       id: selectedID
     }
 
-    console.log(payload);
 
     try {
       // Call the updateUser API
@@ -74,6 +73,7 @@ export default function UpdateUserModal(props) {
         console.log(`Update failed: ${response.error}`);
       } else {
         console.log('User updated successfully');
+        allTheUsers();
         handleClose();
       }
     } catch (error) {
@@ -186,4 +186,5 @@ UpdateUserModal.propTypes = {
   initialBirthdate: PropTypes.string, // Changed from initialEmail to initialBirthdate
   initialRole: PropTypes.string,
   refreshUsers: PropTypes.func, // Added a prop to call a function to refresh the user list
+  allTheUsers: PropTypes.func
 };

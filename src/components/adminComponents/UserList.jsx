@@ -183,12 +183,10 @@ export default function UserList() {
   const allTheUsers = async () => {
       await getAllUsers(auth.token)
       .then(e => {setUsers(e)})
-      console.log("fetching");
   };
 
   const refreshUsers = async () => {
       refresh ? setRefresh(false) : setRefresh(true);
-      console.log("Refreshing");
   }
 
   useEffect(()=>{

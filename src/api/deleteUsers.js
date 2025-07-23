@@ -12,7 +12,6 @@ const deleteUser = async (id,token) => {
 
     fetch(`${API_URL}/api/users/${id}`, requestOptions)
     .then(response => response.text())
-    .then(result => console.log(result))
     .catch(error => console.log('error', error));
 
 }

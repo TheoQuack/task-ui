@@ -7,7 +7,7 @@ export default function LoginForm() {
 
     const navigate = useNavigate();
 
-    const { login } = useAuth();
+    const { login, checkAdminRole } = useAuth();
     const [ form, setForm ] = useState({ email: '', password: ''});
     const [ error, setError ] = useState(null);
 
@@ -20,9 +20,11 @@ export default function LoginForm() {
 
         try{
             await login(form)
+            await checkAdminRole();
             navigate('/profile')
-        } catch {
+        } catch (err){
             setError("Invalid Credentials");
+            console.log(err)
         }
     };
 

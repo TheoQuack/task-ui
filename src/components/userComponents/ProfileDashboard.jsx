@@ -40,8 +40,6 @@ const ProfileDashboard = () => {
             }
         }, [auth]);
 
-        console.log(profileData)
-
         if (!auth) {
             return <Typography variant='h6'> You are not logged in</Typography>;
         }

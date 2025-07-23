@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 
 export default function Home() {
 
-    const { logout } = useAuth();
+    const { logout, isAdmin } = useAuth();
     const navigate = useNavigate()
 
     return (
@@ -21,9 +21,11 @@ export default function Home() {
                     <Link to="/tasks" style={{ textDecoration: 'none', color: 'white', marginRight: '20px' }}>
                         <Typography variant="button">My Tasks</Typography>
                     </Link>
+                    {isAdmin && (
                     <Link to="/users" style={{ textDecoration: 'none', color: 'white', marginRight: '20px' }}>
                         <Typography variant="button">UserList</Typography>
                     </Link>
+                    )}
                     <Button onClick={()=>{logout(); navigate('/login')}} style={{ textDecoration: 'none', color: 'white' }}>
                         <Typography variant="button">Logout</Typography>
                     </Button>

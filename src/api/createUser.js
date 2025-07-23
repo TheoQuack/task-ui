@@ -24,7 +24,6 @@ const createUser = async ({name, birthDate, role, email, password}, token) => {
 
     fetch(`${API_URL}/api/users`, requestOptions)
     .then(response => response.text())
-    .then(result => console.log(result))
     .catch(error => console.log('error', error));
 
 

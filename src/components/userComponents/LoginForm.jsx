@@ -17,6 +17,7 @@ export default function LoginForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(form);
 
         try{
             await login(form)

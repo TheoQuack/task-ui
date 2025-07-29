@@ -2,53 +2,37 @@ import { Box, TextField, Button, Typography, Container, Link } from '@mui/materi
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 export default function UserLogin() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState(null);
     const API_URL = import.meta.env.VITE_API_URL;
+    const { login, checkAdminRole } = useAuth();
+    
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
+        console.log(email,password);
 
-            var raw = JSON.stringify({
-                "email": email,
-                "password": password
-            });
-
-            var requestOptions = {
-                method: 'POST',
-                headers: myHeaders,
-                body: raw,
-                redirect: 'follow'
-            };
-
-            fetch(`${API_URL}/api/login`, requestOptions)
-                .then(response => response.json())
-                .then(result => {
-                    console.log(result);
-                    localStorage.setItem("TOKEN", encodeURI(result.token));
-                    if (result.error) {
-                        console.log(result.error);
-                        window.alert('Error: Invalid Credentials');
-                    } else {
-                        navigate('/');
-                    }
-                })
-                .catch(error => {
-                    console.log('error', error);
-                    window.alert('An error occurred during login.');
-                });
-
-        } catch (err) {
-            console.log(err);
+        const payload = {
+            email: email,
+            password: password
         }
-    }
+
+        try{
+            await login(payload)
+            await checkAdminRole();
+            navigate('/profile')
+        } catch (err){
+            setError("Invalid Credentials");
+            console.log(err)
+        }
+    };
+    
 
     return (
         <Container maxWidth="sm">
@@ -109,13 +93,6 @@ export default function UserLogin() {
                         onChange={(e) => { setPassword(e.target.value) }}
                         fullWidth
                     />
-                    <Link
-                        component={RouterLink} to="/registration"
-                        variant="body2"
-                        sx={{ alignSelf: 'flex', mt: 1 }}
-                    >
-                        Register Now!
-                    </Link>
                     <Button
                         type="submit"
                         variant="contained"
@@ -130,6 +107,7 @@ export default function UserLogin() {
                     >
                         Login
                     </Button>
+                    {error && <Typography color="error">{error}</Typography>}
                 </Box>
             </Box>
         </Container>

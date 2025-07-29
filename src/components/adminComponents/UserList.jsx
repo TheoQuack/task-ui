@@ -43,13 +43,21 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: 'Birthday',
-  }
+  },
+  { // New column for Actions
+    id: 'actions',
+    numeric: false,
+    disablePadding: false,
+    label: 'Actions',
+    align: 'center', // Center alignment for the 'Actions' header label
+  },
 ];
 
 
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  // Removed onSelectAllClick, numSelected, rowCount from props destructuring
+  const { order, orderBy, onRequestSort } = props; 
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -58,21 +66,12 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
-        </TableCell>
+        {/* Removed the TableCell containing the "select all" checkbox */}
+        <TableCell padding="checkbox" /> {/* Empty TableCell for the checkbox column header for alignment */}
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={headCell.align || (headCell.numeric ? 'right' : 'left')}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -80,6 +79,7 @@ function EnhancedTableHead(props) {
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
+              hideSortIcon={true}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
@@ -96,24 +96,24 @@ function EnhancedTableHead(props) {
 }
 
 EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
+  numSelected: PropTypes.number.isRequired, // Keep for potential use with toolbar or other logic
   onRequestSort: PropTypes.func.isRequired,
-  allTheTasks: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
+  // Removed onSelectAllClick from propTypes
   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
   orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
+  rowCount: PropTypes.number.isRequired, // Keep for potential use with toolbar or other logic
 };
 
 
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, allTheUsers, selectedID } = props;
+  const { numSelected, allTheUsers, selectedID, clearSelected } = props; // Add clearSelected prop
   const navigate = useNavigate();
   const { auth } = useAuth();
 
   const handleUpdateRefresh = async () => {
-    allTheUsers();
+    await allTheUsers();
+    clearSelected(); // Call clearSelected after refreshing users
   }
 
   const handleDelete = async () => {
@@ -128,6 +128,8 @@ function EnhancedTableToolbar(props) {
         {
           pl: { sm: 2 },
           pr: { xs: 1, sm: 1 },
+          py: 1,
+          minHeight: { xs: 56, sm: 64 },
         },
         numSelected > 0 && {
           bgcolor: (theme) =>
@@ -137,22 +139,24 @@ function EnhancedTableToolbar(props) {
     >
       {numSelected > 0 ? (
         <>
-
-
         <Tooltip title="Delete" >
           <DeleteConfirmationModal deleteFunc={handleDelete}/>
         </Tooltip>
         </>
         
       ) : (
-        <Tooltip>
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           <Tooltip title="Back" >
-          <ArrowBackIcon fontSize="small" onClick={()=>{navigate('/')}}/>
-        </Tooltip>
-          <IconButton>
-            <AddUserModal allTheUsers={allTheUsers}/>
-          </IconButton>
-        </Tooltip>
+            <IconButton onClick={()=>{navigate('/')}} sx={{ mr: 1 }}>
+              <ArrowBackIcon fontSize="small"/>
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Add User">
+            <IconButton sx={{ ml: 'auto' }}>
+              <AddUserModal allTheUsers={allTheUsers}/>
+            </IconButton>
+          </Tooltip>
+        </Box>
       )}
     </Toolbar>
   );
@@ -162,9 +166,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   selectedID: PropTypes.array.isRequired,
   allTheUsers: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
-  dueDate: PropTypes.string.isRequired,
+  clearSelected: PropTypes.func.isRequired, // Add propType for clearSelected
 };
 
 
@@ -178,7 +180,6 @@ export default function UserList() {
   const { auth, user, checkTheUser } = useAuth();
 
   
-  
 
   const allTheUsers = async () => {
       await getAllUsers(auth.token)
@@ -186,9 +187,12 @@ export default function UserList() {
   };
 
   const refreshUsers = async () => {
-    console.log(user,"kdngdsn");
       refresh ? setRefresh(false) : setRefresh(true);
   }
+
+  const clearSelected = () => { // New function to clear selected items
+    setSelected([]);
+  };
 
   useEffect(()=>{
     const timerId = setTimeout(() => {
@@ -209,15 +213,6 @@ export default function UserList() {
     setOrderBy(property);
   };
 
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
 
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
@@ -243,7 +238,12 @@ export default function UserList() {
     <>
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar allTheUsers={refreshUsers} numSelected={selected.length} selectedID={selected}/>
+        <EnhancedTableToolbar 
+          allTheUsers={refreshUsers} 
+          numSelected={selected.length} 
+          selectedID={selected}
+          clearSelected={clearSelected} // Pass clearSelected to toolbar
+        />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -253,7 +253,7 @@ export default function UserList() {
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
+              // Removed onSelectAllClick from props passed to EnhancedTableHead
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
@@ -272,6 +272,7 @@ export default function UserList() {
                     selected={isItemSelected}
                     sx={{ cursor: 'pointer' }}
                   >
+                    {/* Keep the TableCell with the Checkbox for individual rows */}
                     <TableCell padding="checkbox">
                       <Checkbox
                         onClick={(event) => handleClick(event, row.id)}
@@ -281,21 +282,25 @@ export default function UserList() {
                           'aria-labelledby': labelId,
                         }}
                       />
-                      <IconButton>
-                          <UpdateUserModal selectedID={row.id} allTheUsers={refreshUsers}/>
-                      </IconButton>
                     </TableCell>
                     
                     <TableCell
                       component="th"
                       id={labelId}
                       scope="row"
-                      padding="none"
+                      // Default padding or adjust as needed
                     >
                       {row.name}
                     </TableCell>
                     <TableCell align="right">{row.role}</TableCell>
                     <TableCell align="right">{row.birthDate}</TableCell>
+
+                    {/* New TableCell for Actions */}
+                    <TableCell align="center">
+                      <IconButton>
+                          <UpdateUserModal selectedID={row.id} allTheUsers={refreshUsers}/>
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
                 );
               })}

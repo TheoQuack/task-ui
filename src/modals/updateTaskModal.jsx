@@ -12,6 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; 
 import dayjs from 'dayjs'; 
 import { useAuth } from '../context/AuthContext';
+// import getTask from '../api/getTask';
 
 const style = {
   position: 'absolute',
@@ -29,6 +30,7 @@ const style = {
   gap: '16px',
 };
 
+
 export default function UpdateTaskModal(props) {
   const { selectedID, initialTitle, initialStatus, initialDueDate, allTheTasks} = props; 
   const [open, setOpen] = useState(false);
@@ -37,12 +39,14 @@ export default function UpdateTaskModal(props) {
   const [title, setTitle] = useState(initialTitle || ''); 
   const [status, setStatus] = useState(initialStatus || 'pending'); 
   const [dueDate, setDueDate] = useState(initialDueDate ? dayjs(initialDueDate) : null); 
+  // const [task, setTask] = useState(null);
   const { auth } = useAuth();
-
+    
   useEffect(() => {
     setTitle(initialTitle || '');
     setStatus(initialStatus || 'pending');
     setDueDate(initialDueDate ? dayjs(initialDueDate) : null);
+    // setTask(grabTask);
   }, [selectedID, initialTitle, initialStatus, initialDueDate]);
 
 
@@ -55,6 +59,7 @@ export default function UpdateTaskModal(props) {
       dueDate: formattedDueDate,
       id: selectedID
     }
+    
 
     try {
       const response = await updateTask(payload, auth.token);
@@ -64,6 +69,7 @@ export default function UpdateTaskModal(props) {
         window.alert(`Update failed: ${response.error}`);
       } else {
         console.log('Task updated successfully');
+        // console.log(task, "blehbleh");
         handleClose();
         allTheTasks();
       }

@@ -15,7 +15,7 @@ const deleteTask = async (id, token) => {
     await fetch(`${API_URL}/api/tasks/${id[i]}`, requestOptions)
     .catch(error => console.log('error', error));
   }
-
+  
 }
 
 export default deleteTask;

@@ -11,7 +11,7 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
+import Checkbox from '@mui/material/Checkbox'; // Keep Checkbox import for individual tasks
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
@@ -30,7 +30,7 @@ const headCells = [
   {
     id: 'Task Name',
     numeric: false,
-    disablePadding: true,
+    disablePadding: false,
     label: 'Tasks',
   },
   {
@@ -44,14 +44,21 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: 'Due Date',
-  }
+  },
+  { // New column for Actions
+    id: 'actions',
+    numeric: false,
+    disablePadding: false,
+    label: 'Actions',
+    align: 'center', // Center alignment for the 'Actions' header label
+  },
 ];
 
 
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
-    props;
+  // Removed onSelectAllClick, numSelected, rowCount from props destructuring
+  const { order, orderBy, onRequestSort } = props; 
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -60,21 +67,12 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
-        </TableCell>
+        {/* Removed the TableCell containing the "select all" checkbox */}
+        <TableCell padding="checkbox" /> {/* Empty TableCell for the checkbox column header for alignment */}
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={headCell.align || (headCell.numeric ? 'right' : 'left')}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -82,6 +80,7 @@ function EnhancedTableHead(props) {
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
+              hideSortIcon={true}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
@@ -98,24 +97,24 @@ function EnhancedTableHead(props) {
 }
 
 EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
+  numSelected: PropTypes.number.isRequired, // Keep for potential use with toolbar or other logic
   onRequestSort: PropTypes.func.isRequired,
-  allTheTasks: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
+  // Removed onSelectAllClick from propTypes
   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
   orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
+  rowCount: PropTypes.number.isRequired, // Keep for potential use with toolbar or other logic
 };
 
 
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, allTheTasks, selectedID } = props;
+  const { numSelected, allTheTasks, selectedID, clearSelected } = props; // Add clearSelected prop
   const navigate = useNavigate();
   const { auth } = useAuth();
 
   const handleUpdateRefresh = async () => {
-    allTheTasks();
+    await allTheTasks();
+    clearSelected(); // Call clearSelected after refreshing tasks
   }
 
   const handleDelete = async () => {
@@ -129,6 +128,8 @@ function EnhancedTableToolbar(props) {
         {
           pl: { sm: 2 },
           pr: { xs: 1, sm: 1 },
+          py: 1,
+          minHeight: { xs: 56, sm: 64 },
         },
         numSelected > 0 && {
           bgcolor: (theme) =>
@@ -144,14 +145,18 @@ function EnhancedTableToolbar(props) {
         </>
         
       ) : (
-        <Tooltip>
-           <Tooltip title="Back" >
-          <ArrowBackIcon fontSize="small" onClick={()=>{navigate('/')}}/>
-        </Tooltip>
-          <IconButton>
-            <AddTaskModal allTheTasks={allTheTasks} />
-          </IconButton>
-        </Tooltip>
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          <Tooltip title="Back" >
+            <IconButton onClick={()=>{navigate('/')}} sx={{ mr: 1 }}>
+              <ArrowBackIcon fontSize="small"/>
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Add Task">
+            <IconButton sx={{ ml: 'auto' }}>
+              <AddTaskModal allTheTasks={allTheTasks} />
+            </IconButton>
+          </Tooltip>
+        </Box>
       )}
     </Toolbar>
   );
@@ -161,9 +166,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   selectedID: PropTypes.array.isRequired,
   allTheTasks: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
-  dueDate: PropTypes.string.isRequired,
+  clearSelected: PropTypes.func.isRequired, // Add propType for clearSelected
 };
 
 
@@ -174,19 +177,21 @@ export default function TaskList() {
   const [selected, setSelected] = React.useState([]);
   const [rows, setTasks] = useState([]);
   const [refresh, setRefresh ] = useState(false);
-  const { auth, checkTheUser } = useAuth();
+  const { auth } = useAuth();
 
-  checkTheUser(); 
 
   const allTheTasks = async () => {
       await getAllTasks(auth.token)
       .then(e => {setTasks(e)})
   };
 
-   const refreshUsers = async () => {
+   const refreshTasks = async () => {
       refresh ? setRefresh(false) : setRefresh(true);
-      console.log("Refreshing");
   }
+
+  const clearSelected = () => { // New function to clear selected items
+    setSelected([]);
+  };
 
   useEffect(()=>{
     const timerId = setTimeout(() => {
@@ -198,21 +203,13 @@ export default function TaskList() {
     };
   }, [refresh])
 
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
 
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
@@ -230,15 +227,20 @@ export default function TaskList() {
         selected.slice(selectedIndex + 1),
       );
     } 
-    setSelected(newSelected); 
+    setSelected(newSelected);
   };
 
 
   return (
     <>
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar allTheTasks={refreshUsers} numSelected={selected.length} selectedID={selected}/>
+      <Paper sx={{ width: '100%', mb: 2, elevation: 3 }}>
+        <EnhancedTableToolbar 
+          allTheTasks={refreshTasks} 
+          numSelected={selected.length} 
+          selectedID={selected} 
+          clearSelected={clearSelected} // Pass clearSelected to toolbar
+        />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -248,7 +250,7 @@ export default function TaskList() {
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
+              // Removed onSelectAllClick from props passed to EnhancedTableHead
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
@@ -267,6 +269,7 @@ export default function TaskList() {
                     selected={isItemSelected}
                     sx={{ cursor: 'pointer' }}
                   >
+                    {/* Keep the TableCell with the Checkbox for individual rows */}
                     <TableCell padding="checkbox">
                       <Checkbox
                         onClick={(event) => handleClick(event, row.id)}
@@ -276,21 +279,25 @@ export default function TaskList() {
                           'aria-labelledby': labelId,
                         }}
                       />
-                      <IconButton>
-                          <UpdateTaskModal allTheTasks={refreshUsers} selectedID={row.id}/>
-                      </IconButton>
                     </TableCell>
                     
                     <TableCell
                       component="th"
                       id={labelId}
                       scope="row"
-                      padding="none"
+                      // Default padding or adjust as needed
                     >
                       {row.title}
                     </TableCell>
                     <TableCell align="right">{row.status}</TableCell>
                     <TableCell align="right">{row.dueDate}</TableCell>
+
+                    {/* New TableCell for Actions */}
+                    <TableCell align="center">
+                      <IconButton>
+                          <UpdateTaskModal allTheTasks={refreshTasks} selectedID={row.id}/>
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
                 );
               })}

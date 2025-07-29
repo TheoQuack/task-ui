@@ -1,4 +1,7 @@
 const deleteUser = async (id,token) => {
+
+    console.log(id,"Yeahyea");
+    
     const API_URL = import.meta.env.VITE_API_URL;
     
     var myHeaders = new Headers();
@@ -10,9 +13,11 @@ const deleteUser = async (id,token) => {
     redirect: 'follow'
     };
 
-    fetch(`${API_URL}/api/users/${id}`, requestOptions)
-    .then(response => response.text())
-    .catch(error => console.log('error', error));
+    for (let i=0; i<id.length; i++) {
+        fetch(`${API_URL}/api/users/${id[i]}`, requestOptions)
+        .catch(error => console.log('error', error));
+    }
+
 
 }
 

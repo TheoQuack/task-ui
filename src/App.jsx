@@ -9,17 +9,15 @@ import PrivateRoute from './protectedRoutes/PrivateRoute';
 import ProfileDashboard from './components/userComponents/ProfileDashboard';
 import LoginForm from './components/userComponents/LoginForm';
 import UserList from './components/adminComponents/UserList';
-import AdminRoute from './protectedRoutes/AdminRoute';
-
 function App() {
 
   return (
   <AuthProvider>
     <Router>
-      <Routes>
+      <Routes>a
         <Route path="/" element={<PrivateRoute><Home/></PrivateRoute>}></Route>
         <Route path="/registration" element={<Registration/>}></Route>
-        <Route path="/login" element={<LoginForm  />}></Route>
+        <Route path="/login" element={<LoginForm />}></Route>
         <Route path="/tasks" element={<PrivateRoute><TaskList/></PrivateRoute>}></Route>
         <Route path='/newtask' element={<PrivateRoute><AddTaskForm/></PrivateRoute>}></Route>
         <Route path='/profile' element={<PrivateRoute><ProfileDashboard/></PrivateRoute>}></Route>

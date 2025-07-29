@@ -10,6 +10,7 @@ export const AuthProvider = ({children}) => {
         return stored ? JSON.parse(stored): null;
     })
     const [isAdmin, setIsAdmin] = useState(false);
+    const [user, setUser] = useState({});
 
     const login = async({email, password}) => {
         const res = await fetch(`${API_URL}/api/login`, {
@@ -31,9 +32,6 @@ export const AuthProvider = ({children}) => {
         setAuth(null);
         localStorage.removeItem('auth');
     }
-
-
-
 
 
 
@@ -64,6 +62,26 @@ export const AuthProvider = ({children}) => {
 
 
 
+        const checkTheUser = async () => {
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", `Bearer ${auth.token}`);
+
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/api/users/${auth.user}`, requestOptions);
+                const result = await response.json();
+                setUser(result);
+            } catch (error) {
+                console.error('Error fetching user role:', error);
+                setIsAdmin(false);
+            }
+    };
+
 
 
 
@@ -71,7 +89,7 @@ export const AuthProvider = ({children}) => {
 
 
     return (
-        <AuthContext.Provider value={{auth, isAdmin, checkAdminRole, login, logout}}>
+        <AuthContext.Provider value={{auth, isAdmin, user, checkTheUser, checkAdminRole, login, logout}}>
             {children}
         </AuthContext.Provider>
     );

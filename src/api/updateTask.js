@@ -22,7 +22,6 @@ var requestOptions = {
 
 fetch(`${API_URL}/api/tasks/${id}`, requestOptions)
   .then(response => response.text())
-  .then(result => console.log(result))
   .catch(error => console.log('error', error));
 
 }

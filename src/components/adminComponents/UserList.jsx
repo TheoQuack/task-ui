@@ -18,7 +18,6 @@ import { visuallyHidden } from '@mui/utils';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DeleteConfirmationModal from '../../modals/deleteConfirmationModal';
-import AddTaskModal from '../../modals/addTaskModal';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAuth } from '../../context/AuthContext';
 import getAllUsers from '../../api/getAllUsers';
@@ -50,8 +49,7 @@ const headCells = [
 
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
-    props;
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -177,8 +175,10 @@ export default function UserList() {
   const [selected, setSelected] = React.useState([]);
   const [rows, setUsers] = useState([]);
   const [refresh, setRefresh ] = useState(false);
-  const { auth } = useAuth();
+  const { auth, user, checkTheUser } = useAuth();
 
+  
+  
 
   const allTheUsers = async () => {
       await getAllUsers(auth.token)
@@ -186,12 +186,14 @@ export default function UserList() {
   };
 
   const refreshUsers = async () => {
+    console.log(user,"kdngdsn");
       refresh ? setRefresh(false) : setRefresh(true);
   }
 
   useEffect(()=>{
     const timerId = setTimeout(() => {
       allTheUsers();
+      checkTheUser();
     }, 10);
 
     return () => {

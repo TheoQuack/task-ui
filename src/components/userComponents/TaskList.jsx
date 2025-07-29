@@ -174,7 +174,9 @@ export default function TaskList() {
   const [selected, setSelected] = React.useState([]);
   const [rows, setTasks] = useState([]);
   const [refresh, setRefresh ] = useState(false);
-  const { auth } = useAuth();
+  const { auth, checkTheUser } = useAuth();
+
+  checkTheUser(); 
 
   const allTheTasks = async () => {
       await getAllTasks(auth.token)

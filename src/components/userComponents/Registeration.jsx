@@ -42,51 +42,42 @@ export default function Registration() {
                 .then((e) => {
                     let parsedData = JSON.parse(e);
                     if (parsedData.error) {
-                        // Use a custom message box instead of window.alert
                         console.error('Registration Error:', parsedData.error);
-                        // You might want to display this error in a more user-friendly way, e.g., a Snackbar or a custom dialog.
-                        // For now, we'll log it and prevent navigation.
                         return;
                     }
                     navigate('/login');
                 })
                 .catch(error => {
                     console.error("Fetch error during registration:", error);
-                    // Use a custom message box instead of window.alert
-                    // You might want to display this error in a more user-friendly way, e.g., a Snackbar or a custom dialog.
                 });
 
 
         } catch (err) {
             console.error("Unexpected error during registration:", err);
-            // Use a custom message box instead of window.alert
-            // You might want to display this error in a more user-friendly way, e.g., a Snackbar or a custom dialog.
         }
 
     }
 
 
     return (
-        <Container maxWidth="sm"> {/* Consistent Container for max-width and centering */}
+        <Container maxWidth="sm"> 
             <Box
                 sx={{
-                    mt: 8, // Margin top for vertical spacing
+                    mt: 8,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    // Styles to make the box fixed white and stand out
-                    bgcolor: 'white', // Explicitly set to white
-                    border: '1px solid #e0e0e0', // Subtle border
+                    bgcolor: 'white', 
+                    border: '1px solid #e0e0e0', 
                     borderRadius: '8px',
-                    boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)', // Stronger shadow
+                    boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)', 
                     overflow: 'hidden',
                 }}
             >
-                {/* Header Section */}
                 <Box
                     sx={{
                         width: '100%',
-                        backgroundColor: '#606060', // Dark grey header
+                        backgroundColor: '#606060',
                         padding: '16px',
                         textAlign: 'center',
                     }}
@@ -102,14 +93,14 @@ export default function Registration() {
                     onSubmit={handleSubmit}
                     sx={{
                         width: '100%',
-                        p: 4, // Padding inside the form box
+                        p: 4, 
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: 2, // Spacing between TextFields
+                        gap: 2, 
                     }}
                 >
                     <TextField
-                        id="name-input" // Changed ID for clarity
+                        id="name-input" 
                         label="Enter Your Name"
                         placeholder='Name'
                         value={name}
@@ -117,7 +108,7 @@ export default function Registration() {
                         fullWidth
                     />
                     <TextField
-                        id="email-input" // Changed ID for clarity
+                        id="email-input"
                         label="Enter Your Email"
                         placeholder='Email'
                         type="email"
@@ -126,7 +117,7 @@ export default function Registration() {
                         fullWidth
                     />
                     <TextField
-                        id="password-input" // Changed ID for clarity
+                        id="password-input" 
                         label="Enter Your Password"
                         placeholder='Password'
                         type="password"

@@ -26,16 +26,25 @@ const style = {
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
-  display: 'flex', // Use flexbox for better layout of form fields
-  flexDirection: 'column', // Arrange items vertically
-  gap: '16px', // Add space between form fields
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '16px',
 };
 
 export default function AddUserModal(props) {
   const { allTheUsers } = props;
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setErrorMessage(''); // Clear error message when closing the modal
+    // Also reset form fields when modal is closed
+    setName('');
+    setBirthDate(null);
+    setRole('');
+    setEmail('');
+    setPassword('');
+  };
 
   const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState(null);
@@ -44,14 +53,17 @@ export default function AddUserModal(props) {
   const [password, setPassword] = useState('');
 
   const { auth } = useAuth();
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleAdd = async (e) => {
+    e.preventDefault();
+    setErrorMessage(''); // Clear previous error messages before new submission
 
-    const formattedDueDate = birthDate ? dayjs(birthDate).format('YYYY-MM-DD') : '';
+    const formattedBirthDate = birthDate ? dayjs(birthDate).format('YYYY-MM-DD') : '';
 
     const payload = {
       name: name,
-      birthDate: formattedDueDate,
+      birthDate: formattedBirthDate,
       role: role,
       email: email,
       password: password
@@ -59,32 +71,38 @@ export default function AddUserModal(props) {
 
     try {
       await createUser(payload, auth.token);
-      handleClose();
-    
-      //reset all the states
-      setName('');
-      setBirthDate('');
-      setRole('');
-      setEmail('');
-      setPassword('')
-      allTheUsers();
-
-    } catch (e) {
-      console.error("Error creating User:", e);
-      alert("Failed to create User. Please try again.");
+      handleClose(); // Close only on successful creation
+      allTheUsers(); // Refresh user list
+    } catch (error) {
+      if (error.response && error.response.data) {
+        const backendError = error.response.data;
+        if (backendError.errors && Array.isArray(backendError.errors)) {
+          // If there's an 'errors' array (e.g., from Sequelize validation)
+          setErrorMessage(backendError.errors.join(', '));
+        } else if (backendError.message) {
+          // If there's a general 'message' property
+          setErrorMessage(backendError.message);
+        } else {
+          // Fallback if the structure is unexpected
+          setErrorMessage("An unknown error occurred from the server.");
+        }
+      } else if (error.message) {
+        // If it's a network error or something before the backend response
+        setErrorMessage(`Network or client error: ${error.message}`);
+      } else {
+        setErrorMessage("Failed to create user. Please try again.");
+      }
     }
-
-    e.preventDefault();
   }
 
   return (
     <div>
-      <AddIcon onClick={handleOpen} sx={{ cursor: 'pointer' }} /> {/* Add cursor pointer for better UX */}
+      <AddIcon onClick={handleOpen} sx={{ cursor: 'pointer' }} />
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="add-task-modal-title"
-        aria-describedby="add-task-modal-description"
+        aria-labelledby="add-user-modal-title"
+        aria-describedby="add-user-modal-description"
       >
         <Box
           sx={style}
@@ -106,8 +124,9 @@ export default function AddUserModal(props) {
 
           {/* Role Dropdown (Select) */}
           <FormControl fullWidth>
-            <InputLabel id="task-status-label">Role</InputLabel>
+            <InputLabel id="user-role-label">Role</InputLabel>
             <Select
+              labelId="user-role-label"
               id="user-role"
               value={role}
               label="Role"
@@ -120,7 +139,7 @@ export default function AddUserModal(props) {
             </Select>
           </FormControl>
 
-              {/* Email TextField */}
+          {/* Email TextField */}
           <TextField
             id="email"
             label="Email"
@@ -132,10 +151,11 @@ export default function AddUserModal(props) {
             fullWidth
           />
 
-              {/* Password TextField */}
+          {/* Password TextField */}
           <TextField
             id="password"
             label="Password"
+            type="password"
             variant="outlined"
             value={password}
             onChange={(event) => {
@@ -145,16 +165,25 @@ export default function AddUserModal(props) {
           />
 
           {/* Birthday DatePicker */}
-         <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-            label="Birthdate"
-            value={birthDate}
-            onChange={(newValue) => {
+              label="Birthdate"
+              value={birthDate}
+              onChange={(newValue) => {
                 setBirthDate(newValue);
-            }}
-            renderInput={(params) => <TextField {...params} fullWidth />}
+              }}
+              renderInput={(params) => <TextField {...params} fullWidth />}
             />
-        </LocalizationProvider>
+          </LocalizationProvider>
+
+          {/* Display Error Message */}
+          {errorMessage && (
+            <Box sx={{ color: 'red', textAlign: 'center', mt: 2 }}>
+              {errorMessage.split(',').map((message, index) => (
+                <p key={index} style={{ margin: '4px 0' }}>{message.trim()}</p>
+              ))}
+            </Box>
+          )}
 
           {/* Buttons */}
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>

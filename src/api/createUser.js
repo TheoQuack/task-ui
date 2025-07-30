@@ -1,4 +1,3 @@
-
 const createUser = async ({name, birthDate, role, email, password}, token) => {
 
     const API_URL = import.meta.env.VITE_API_URL;
@@ -22,12 +21,25 @@ const createUser = async ({name, birthDate, role, email, password}, token) => {
     redirect: 'follow'
     };
 
-    fetch(`${API_URL}/api/users`, requestOptions)
-    .then(response => response.text())
-    .catch(error => console.log('error', error));
+    try {
+        const response = await fetch(`${API_URL}/api/users`, requestOptions);
+        const data = await response.json(); // Always attempt to parse JSON for errors too
 
+        if (!response.ok) {
+            // If the response is not OK (e.g., 4xx or 5xx status)
+            // Throw an error that includes the backend's message/errors
+            const error = new Error(data.message || 'An error occurred');
+            error.response = { data: data }; // Attach the full backend response data
+            throw error;
+        }
 
+        return data; // Return the successful response data
+
+    } catch (error) {
+        // This catch block handles network errors or errors thrown above
+        console.error('Error in createUser API call:', error);
+        throw error; // Re-throw the error so the calling component can catch it
+    }
 }
-
 
 export default createUser;

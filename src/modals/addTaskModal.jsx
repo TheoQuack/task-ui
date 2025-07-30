@@ -41,6 +41,7 @@ export default function AddTaskModal(props) {
   const [status, setStatus] = useState('pending'); // Default status to 'pending'
   const [dueDate, setDueDate] = useState(null); // Initialize dueDate as null for DatePicker
   const { auth } = useAuth();
+  const [errorMessage, setErrorMessage] = useState(''); // New state for error message
 
   const handleAdd = async (e) => {
     const formattedDueDate = dueDate ? dayjs(dueDate).format('YYYY-MM-DD') : '';
@@ -52,6 +53,7 @@ export default function AddTaskModal(props) {
     }
 
     e.preventDefault();
+    setErrorMessage(''); // Clear previous error messages
 
     try {
       await createTask(payload, auth.token);
@@ -63,8 +65,9 @@ export default function AddTaskModal(props) {
       allTheTasks();
     } catch (e) {
       console.error("Error creating task:", e);
-      // Handle error, e.g., show an alert to the user
-      alert("Failed to create task. Please try again.");
+      // Set the specific error message from the caught error object
+      setErrorMessage(e.message || "Failed to create task. Please try again.");
+      console.log(e.errors , 'sngisngsi');
     }
   }
 
@@ -125,6 +128,15 @@ export default function AddTaskModal(props) {
               renderInput={(params) => <TextField {...params} fullWidth />}
             />
           </LocalizationProvider>
+
+          {/* Display Error Message */}
+          {errorMessage && (
+            <Box sx={{ color: 'red', textAlign: 'center' }}>
+              {errorMessage.split(',').map((message, index) => (
+                <p key={index}>{message.trim()}</p>
+              ))}
+            </Box>
+          )}
 
           {/* Buttons */}
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
